@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cockatrice Deck Files</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Cockatrice Commander Deck Files</h1>
+    <form method="POST">
+        <label for="product_code">Product Code:</label>
+        <select name="product_code" id="product_code">
+            {% for code in product_codes %}
+                <option value="{{ code }}" {% if code == selected_product_code %}selected{% endif %}>{{ code }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <label for="product_name">Product Name:</label>
+        <select name="product_name" id="product_name">
+            {% for name in product_names %}
+                <option value="{{ name }}" {% if name == selected_product_name %}selected{% endif %}>{{ name }}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <input type="submit" value="Filter">
+    </form>
+
+    <br>
+    {% if selected_product_code %}
+        <p>Selected Product Code: {{ selected_product_code }}</p>
+    {% endif %}
+    
+    {% if selected_product_name %}
+        <p>Selected Product Name: {{ selected_product_name }}</p>
+    {% endif %}
+
+    {% if filtered_data %}
+        <p>Download Deck File : <a href="{{ url_for('download', product_code=selected_product_code, product_name=selected_product_name) }}">{{ selected_product_name }}.cod</a></p>
+        <br>
+        <br>
+        <table>
+            <thead>
+                <tr>
+                    <th>Card Name</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in filtered_data %}
+                    <tr>
+                        <td>{{ row['CardName'] }}</td>
+                        <td>{{ row['TotalCardQuantity'] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% elif selected_product_code and selected_product_name %}
+        <p>No data found for selected product code and name.</p>
+    {% endif %}
+
+    <script>
+        $(document).ready(function() {
+            // Update the ProductName dropdown when the ProductCode changes
+            $('#product_code').change(function() {
+                var product_code = $(this).val();
+                $.ajax({
+                    url: '/get_product_names',
+                    type: 'GET',
+                    data: {product_code: product_code},
+                    dataType: 'json',
+                    success: function(response) {
+                        $('#product_name').empty();
+                        $.each(response.product_names, function(index, product_name) {
+                            $('#product_name').append($('<option></option>').attr('value', product_name).text(product_name));
+                        });
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
