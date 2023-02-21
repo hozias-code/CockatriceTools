@@ -1,8 +1,7 @@
 # Cockatrice Deck Generator
 
 This is a flask web application that allows users to generate a Magic: The Gathering deck from a CSV file of cards.
-The user can select a product code and product name to filter the list of available cards.
-The application also allows the user to download their deck in a .cod file format for use with the Cockatrice deck-building software.
+The user can select a product code and product name to filter the list of available cards, then download their deck in a .cod file format for use with Cockatrice, the deck-building software.
 Currently limited to the preconstructed Commander decklists; more functinality will be added in the future.
 
 ## Functionality
